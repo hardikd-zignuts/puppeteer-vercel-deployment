@@ -39,7 +39,7 @@ app.get("/profile-image", async (req, res) => {
 
     // Navigate to the Instagram profile
     await page.goto(`https://www.instagram.com/${username}/`, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
     });
 
     // Wait for the profile picture using the first alt tag
