@@ -1,6 +1,6 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
-
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 const app = express();
 
 app.use(express.json());
@@ -14,6 +14,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/profile-image", async (req, res) => {
+  let browser;
   const username = req.query.username;
 
   if (!username || username === "") {
@@ -24,8 +25,13 @@ app.get("/profile-image", async (req, res) => {
 
   try {
     // Launch a headless browser using Puppeteer
-    const browser = await puppeteer.launch({
-      defaultViewport: null,
+
+    browser = await puppeteer.launch({
+      args: [...chromium.args, "--no-sandbox"],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
 
     // Create a new page in the browser
