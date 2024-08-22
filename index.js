@@ -66,9 +66,17 @@ app.get("/profile-image", async (req, res) => {
     await browser.close();
 
     if (profileImage) {
-      res.json({ src: profileImage?.src });
+      // res.json({ src: profileImage?.src });
+      res.redirect(
+        profileImage?.src ||
+          "https://techcult.com/wp-content/uploads/2022/12/How-to-Fix-User-Not-Found-Instagram.png"
+      );
     } else {
-      res.status(404).json({ error: "Profile image not found" });
+      res.redirect(
+        "https://techcult.com/wp-content/uploads/2022/12/How-to-Fix-User-Not-Found-Instagram.png"
+      );
+
+      // res.status(404).json({ error: "Profile image not found" });
     }
   } catch (error) {
     console.error("Error:", error);
