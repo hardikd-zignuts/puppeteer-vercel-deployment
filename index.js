@@ -37,37 +37,29 @@ app.get("/profile-image", async (req, res) => {
 
     // Navigate to the Instagram profile
     await page.goto(`https://www.instagram.com/${username}/`, {
-      waitUntil: "networkidle2",
+      waitUntil: "networkidle0",
       timeout: 60000, // Increase timeout to 60 seconds
     });
 
-    // Wait for either of the selectors
-    const selectors = [
-      `img[alt="${username}'s profile picture"]`,
-      'img[alt="Profile photo"]',
-      "header img", // This is a more general selector that might catch the profile image
-    ];
+    const validAlt = ["Profile photo", `${username}'s profile picture`];
 
-    let imageUrl = null;
-
-    for (const selector of selectors) {
-      try {
-        await page.waitForSelector(selector, { timeout: 5000 });
-        imageUrl = await page.evaluate((sel) => {
-          const imgElement = document.querySelector(sel);
-          return imgElement ? imgElement.src : null;
-        }, selector);
-
-        if (imageUrl) break;
-      } catch (error) {
-        console.log(`Selector ${selector} not found, trying next...`);
+    // Extract image src if alt text is valid
+    const profileImage = await page.evaluate((validAlt) => {
+      const imgs = document.getElementsByTagName("img");
+      for (let img of imgs) {
+        if (validAlt.includes(img.alt)) {
+          return {
+            src: img.src,
+          };
+        }
       }
-    }
+      return null;
+    }, validAlt);
 
     await browser.close();
 
-    if (imageUrl) {
-      res.json({ imageUrl });
+    if (profileImage) {
+      res.json({ src: profileImage?.src });
     } else {
       res.status(404).json({ error: "Profile image not found" });
     }
