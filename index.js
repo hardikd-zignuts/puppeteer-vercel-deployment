@@ -25,12 +25,12 @@ app.get("/profile-image", async (req, res) => {
 
   try {
     browser = await puppeteer.launch({
-      // headless: true,
-      // args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      args: [...chromium.args, "--no-sandbox"],
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // args: [...chromium.args, "--no-sandbox"],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      // headless: chromium.headless,
       ignoreHTTPSErrors: true,
     });
 
