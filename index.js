@@ -1,6 +1,5 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
-const chromium = require("@sparticuz/chromium");
 const app = express();
 
 app.use(express.json());
@@ -25,10 +24,8 @@ app.get("/profile-image", async (req, res) => {
 
   try {
     browser = await puppeteer.launch({
-      args: [...chromium.args, "--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: await chromium.executablePath(),
       headless: true,
-      ignoreHTTPSErrors: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
